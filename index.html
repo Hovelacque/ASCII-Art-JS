@@ -3,7 +3,8 @@
 <script>
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
-    const densityString = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.';
+    // const densityString = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.';
+    const densityString = '¶@ØÆMåBNÊßÔR#8Q&mÃ0À$GXZA5ñk2S%±3Fz¢yÝCJf1t7ªLc¿+?(r/¤²!*;"^:,\'.` '
     const inverter = false;
     const colunas = 80;
 
@@ -24,9 +25,12 @@
             if (inverter)
                 index = Math.abs((densityString.length - 1) - index)
             const char = densityString[index]
-            out += char;
+            out += `<span style="color:rgba(${r},${g},${b},1)">${char}</span>`;
         }
+
+        // console.log(out);
         output.innerHTML = out;
+
     }
 
     const img = new Image();
