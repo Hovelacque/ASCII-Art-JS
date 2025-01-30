@@ -1,5 +1,6 @@
 <canvas hidden></canvas>
-<div id="output" style="font-size: 3px; font-family: monospace;"></div>
+Número do pokemon: <input type="number"> <button>Carregar...</button>
+<div id="output" style="font-size: 10px; font-family: monospace;"></div>
 
 
 <script>
@@ -127,7 +128,8 @@
             for (let x = 0; x < row.length; x++) {
                 const { r, g, b, char } = row[x];
                 if (x >= cut.xi && y >= cut.yi && x <= cut.xf && y <= cut.yf) { //area de cut
-                    out += `<span style="color:rgba(255,255,0,1)">#</span>`;
+                    out += `<span style="color:rgba(0,0,0,1)">*</span>`;
+
                 }
                 else { //render
                     if (r == 0 && g == 0 && b == 0)
@@ -170,16 +172,10 @@
             return `<span style="color:rgba(${r},${g},${b},1)">${char}</span>`;
     }
 
-    
-    const main = async () => {
+    const render = async (numero) => {
         const pokedex = await getMatrizASCIIArt('pokedex_kanto.png', 400)
-        // renderMatriz(pokedex)
-        const url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png'
-        // const url = '004.png'
-        // const url = '001.png'
-        // const charmander = await getMatrizASCIIArt('004.png', 90)
+        const url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${numero}.png`
         const charmander = await getMatrizASCIIArt(url, 62)
-        // renderMatriz(charmander);
 
         let out = '',
             xCut = 0,
@@ -213,10 +209,18 @@
 
         const output = document.querySelector('#output');
         output.innerHTML = out;
-
     }
 
-    main();
+    const main = async () => {
+        const pokedex = await getMatrizASCIIArt('pokedex_kanto.png', 400)
+        renderMatriz(pokedex)
+    }
 
-    // load('pokedex_kanto.png')
+    document.querySelector('button').addEventListener('click', () => {
+        const numero = document.querySelector('input').value;
+        render(numero);
+    })
+
+
+    main();
 </script>
