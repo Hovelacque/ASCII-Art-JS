@@ -12,8 +12,8 @@
     const inverter = false;
     // const colunas = 400;
 
-    // const cut = { id: 'tela', xi: 65, yi: 61, xf: 155, yf: 90 };
-    const cut = { id: 'tela', xi: 80, yi: 61, xf: 140, yf: 90 };
+    const cut = { id: 'tela', xi: 65, yi: 61, xf: 155, yf: 90, offset: 15 };
+    // const cut = { id: 'tela', xi: 80, yi: 61, xf: 140, yf: 90 };
 
     /*
         const load = (url) => {
@@ -173,8 +173,10 @@
         const pokedex = await getMatrizASCIIArt('pokedex_kanto.png', 400)
         // renderMatriz(pokedex)
         // const url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png'
-        // const charmander = await getMatrizASCIIArt(url, 62)
-        const charmander = await getMatrizASCIIArt('001.png', 62)
+        const url = '004.png'
+        // const url = '001.png'
+        // const charmander = await getMatrizASCIIArt('004.png', 90)
+        const charmander = await getMatrizASCIIArt(url, 62)
         // renderMatriz(charmander);
 
         let out = '',
@@ -185,11 +187,16 @@
             for (let x = 0; x < row.length; x++) {
 
                 if (x >= cut.xi && y >= cut.yi && x <= cut.xf && y <= cut.yf) {
-                    let html = `<span style="color:rgba(255,255,0,1)">#</span>`
-                    if (charmander.length > yCut && charmander[yCut].length > xCut)
-                        html = getHTML(charmander[yCut][xCut]);
+                    let html = `<span style="color:rgba(255,255,255,1)">*</span>`
+                    // let html = `<span style="color:rgba(255,255,0,1)">#</span>`
+
+                    if (x >= cut.xi + cut.offset && y >= cut.yi && x <= cut.xf - cut.offset && y <= cut.yf) {
+                        if (charmander.length > yCut && charmander[yCut].length > xCut)
+                            html = getHTML(charmander[yCut][xCut]);
+                        xCut++
+                    }
+
                     out += html;
-                    xCut++
                 }
                 else
                     out += getHTML(row[x])
