@@ -1,12 +1,13 @@
+<input type="file" change="handleFiles" accept="image/*" />
 <canvas></canvas>
 <div id="output" style="font-size: 10px; font-family: monospace;"></div>
 <script>
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
-    // const densityString = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.';
-    const densityString = '¶@ØÆMåBNÊßÔR#8Q&mÃ0À$GXZA5ñk2S%±3Fz¢yÝCJf1t7ªLc¿+?(r/¤²!*;"^:,\'.` '
+    const densityString = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.';
+    // const densityString = '¶@ØÆMåBNÊßÔR#8Q&mÃ0À$GXZA5ñk2S%±3Fz¢yÝCJf1t7ªLc¿+?(r/¤²!*;"^:,\'.` '
     const cor = true;
-    const inverter = true;
+    const inverter = false;
     const colunas = 80;
 
     const renderOutut = (pixels) => {
@@ -42,20 +43,31 @@
 
     }
 
-    const img = new Image();
-    img.onload = () => {
-        // const height = img.height;
-        // const width = img.width;
+    const load = (url) => {
+        const img = new Image();
+        img.onload = () => {
+            // const height = img.height;
+            // const width = img.width;
 
-        const height = img.height * colunas / 2 / img.width
-        const width = colunas
+            const height = img.height * colunas / 2 / img.width
+            const width = colunas
 
-        canvas.height = height;
-        canvas.width = width;
-        ctx.drawImage(img, 0, 0, width, height)
-        renderOutut(ctx.getImageData(0, 0, width, height).data)
+            canvas.height = height;
+            canvas.width = width;
+            ctx.drawImage(img, 0, 0, width, height)
+            renderOutut(ctx.getImageData(0, 0, width, height).data)
+        }
+        // img.src = 'balao.webp';
+        img.src = url;
     }
-    // img.src = 'balao.webp';
-    img.src = '004.png';
+
+
+    handleFiles = (e) => {
+        var url = URL.createObjectURL(e.target.files[0]);
+        load(url)
+    }
+
+    // load('balao.webp')
+    load('004.png')
 
 </script>
