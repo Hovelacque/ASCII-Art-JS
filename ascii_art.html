@@ -1,0 +1,73 @@
+<input type="file" change="handleFiles" accept="image/*" />
+<canvas></canvas>
+<div id="output" style="font-size: 10px; font-family: monospace;"></div>
+<script>
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const densityString = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.';
+    // const densityString = '¶@ØÆMåBNÊßÔR#8Q&mÃ0À$GXZA5ñk2S%±3Fz¢yÝCJf1t7ªLc¿+?(r/¤²!*;"^:,\'.` '
+    const cor = true;
+    const inverter = false;
+    const colunas = 80;
+
+    const renderOutut = (pixels) => {
+        const output = document.querySelector('#output');
+
+        let out = '';
+        for (let i = 0; i < pixels.length; i = i + 4) {
+            if (i > 0 && i % (canvas.width * 4) == 0)
+                out += `<br>`
+
+            const r = pixels[i]
+            const g = pixels[i + 1]
+            const b = pixels[i + 2]
+            const m = (r + g + b) / 3;
+
+            let index = Math.floor(m * (densityString.length - 1) / 255);
+            if (inverter)
+                index = Math.abs((densityString.length - 1) - index)
+            const char = densityString[index]
+
+            if (cor) {
+                if (r == 0 && g == 0 && b == 0)
+                    out += `<span style="color:rgba(255,255,255,1)">${char}</span>`;
+                else
+                    out += `<span style="color:rgba(${r},${g},${b},1)">${char}</span>`;
+            }
+            else
+                out += `<span>${char}</span>`;
+        }
+
+        // console.log(out);
+        output.innerHTML = out;
+
+    }
+
+    const load = (url) => {
+        const img = new Image();
+        img.onload = () => {
+            // const height = img.height;
+            // const width = img.width;
+
+            const height = img.height * colunas / 2 / img.width
+            const width = colunas
+
+            canvas.height = height;
+            canvas.width = width;
+            ctx.drawImage(img, 0, 0, width, height)
+            renderOutut(ctx.getImageData(0, 0, width, height).data)
+        }
+        // img.src = 'balao.webp';
+        img.src = url;
+    }
+
+
+    handleFiles = (e) => {
+        var url = URL.createObjectURL(e.target.files[0]);
+        load(url)
+    }
+
+    // load('balao.webp')
+    load('004.png')
+
+</script>
