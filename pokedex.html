@@ -1,5 +1,6 @@
 <canvas hidden></canvas>
-<div id="output" style="font-size: 3px; font-family: monospace;"></div>
+Número do pokemon: <input type="number"> <button>Carregar...</button>
+<div id="output" style="font-size: 10px; font-family: monospace;"></div>
 
 
 <script>
@@ -12,8 +13,8 @@
     const inverter = false;
     // const colunas = 400;
 
-    // const cut = { id: 'tela', xi: 65, yi: 61, xf: 155, yf: 90 };
-    const cut = { id: 'tela', xi: 80, yi: 61, xf: 140, yf: 90 };
+    const cut = { id: 'tela', xi: 65, yi: 61, xf: 155, yf: 90, offset: 15 };
+    // const cut = { id: 'tela', xi: 80, yi: 61, xf: 140, yf: 90 };
 
     /*
         const load = (url) => {
@@ -83,6 +84,7 @@
     const loadImageData = (url, _colunas) => {
         return new Promise((resolve) => {
             const img = new Image();
+            img.crossOrigin = "Anonymous";
             img.onload = () => {
                 // const height = img.height;
                 // const width = img.width;
@@ -126,7 +128,8 @@
             for (let x = 0; x < row.length; x++) {
                 const { r, g, b, char } = row[x];
                 if (x >= cut.xi && y >= cut.yi && x <= cut.xf && y <= cut.yf) { //area de cut
-                    out += `<span style="color:rgba(255,255,0,1)">#</span>`;
+                    out += `<span style="color:rgba(0,0,0,1)">*</span>`;
+
                 }
                 else { //render
                     if (r == 0 && g == 0 && b == 0)
@@ -169,13 +172,10 @@
             return `<span style="color:rgba(${r},${g},${b},1)">${char}</span>`;
     }
 
-    const main = async () => {
+    const render = async (numero) => {
         const pokedex = await getMatrizASCIIArt('pokedex_kanto.png', 400)
-        // renderMatriz(pokedex)
-        // const url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png'
-        // const charmander = await getMatrizASCIIArt(url, 62)
-        const charmander = await getMatrizASCIIArt('001.png', 62)
-        // renderMatriz(charmander);
+        const url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${numero}.png`
+        const charmander = await getMatrizASCIIArt(url, 62)
 
         let out = '',
             xCut = 0,
@@ -185,11 +185,16 @@
             for (let x = 0; x < row.length; x++) {
 
                 if (x >= cut.xi && y >= cut.yi && x <= cut.xf && y <= cut.yf) {
-                    let html = `<span style="color:rgba(255,255,0,1)">#</span>`
-                    if (charmander.length > yCut && charmander[yCut].length > xCut)
-                        html = getHTML(charmander[yCut][xCut]);
+                    let html = `<span style="color:rgba(255,255,255,1)">*</span>`
+                    // let html = `<span style="color:rgba(255,255,0,1)">#</span>`
+
+                    if (x >= cut.xi + cut.offset && y >= cut.yi && x <= cut.xf - cut.offset && y <= cut.yf) {
+                        if (charmander.length > yCut && charmander[yCut].length > xCut)
+                            html = getHTML(charmander[yCut][xCut]);
+                        xCut++
+                    }
+
                     out += html;
-                    xCut++
                 }
                 else
                     out += getHTML(row[x])
@@ -204,10 +209,18 @@
 
         const output = document.querySelector('#output');
         output.innerHTML = out;
-
     }
 
-    main();
+    const main = async () => {
+        const pokedex = await getMatrizASCIIArt('pokedex_kanto.png', 400)
+        renderMatriz(pokedex)
+    }
 
-    // load('pokedex_kanto.png')
+    document.querySelector('button').addEventListener('click', () => {
+        const numero = document.querySelector('input').value;
+        render(numero);
+    })
+
+
+    main();
 </script>
